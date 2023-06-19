@@ -6,31 +6,31 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Linq;
+using Prism.Ioc;
+using Prism.Unity;
 using System.Threading.Tasks;
 using System.Windows;
+using SysTest.Win.Database;
+using SysTest.Win.EntityService;
 
 namespace SysTest.Win
 {
     /// <summary>
     /// Interaction logic for App.xaml
     /// </summary>
-    public partial class App : System.Windows.Application
-    {
-        IContainer? container;
-       
-        protected override void OnStartup(StartupEventArgs e)
+    public partial class App : PrismApplication
+    { 
+        protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
-            var builder = new ContainerBuilder();
+            containerRegistry.RegisterSingleton<ApplicationContext>(() =>
+                                                                    {
+                                                                        var context = new ApplicationContext();
 
-            builder.RegisterModule<SysModule>();
-            builder.RegisterType<MainWindowViewModel>().SingleInstance();
-            builder.RegisterType<MainWindow>().SingleInstance();
+                                                                        return context;
+                                                                    });
 
-            container = builder.Build();
-
-            MainWindow = container.Resolve<MainWindow>();
-            MainWindow.Show();
-            
+            containerRegistry.RegisterScoped<IPortService, PortService>();
         }
+        protected override Window CreateShell() => Container.Resolve<MainWindow>();
     }
 }

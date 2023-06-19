@@ -24,11 +24,9 @@ namespace SysTest.Win
     public partial class MainWindow : Window
     {
         
-        public MainWindow(ILifetimeScope container)
-        {
-            
+        public MainWindow()
+        {      
             InitializeComponent();
-            DataContext = container.Resolve<MainWindowViewModel>();
         }
     }
 }
